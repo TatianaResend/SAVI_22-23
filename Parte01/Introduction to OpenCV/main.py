@@ -1,5 +1,5 @@
 #!/usr/bin/python3
 
-#tes
+#test
 import cv2 as cv
 print(cv.__version__)
