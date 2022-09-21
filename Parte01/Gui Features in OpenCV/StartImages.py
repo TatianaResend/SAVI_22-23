@@ -17,3 +17,6 @@ k = cv.waitKey(0)
 
 if k == ord("s"):
     cv.imwrite("starry_night.png", img)
+
+#Note - Give permission in the terminal:
+# chmod ugo+rwx
