@@ -2,7 +2,7 @@
 
 Sistemas Avançadps de Visão industrial (SAVI)
 
-UNiversidade de AVeiro
+Universidade de Aveiro
 
 Tatiana Resende, nº93038, tatianaresende@ua.pt
 
