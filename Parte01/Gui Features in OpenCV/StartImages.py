@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 #The OpenCV python library is imported
-from turtle import clear
 import cv2 as cv
 import sys
 
