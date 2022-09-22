@@ -24,6 +24,7 @@ while cap.isOpened():
     if cv.waitKey(1) == ord('q'):
         break
 
+#Termination:
 # Release everything if job is finished
 cap.release()
 out.release()
