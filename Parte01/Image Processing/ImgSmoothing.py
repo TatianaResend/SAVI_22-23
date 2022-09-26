@@ -20,7 +20,7 @@ plt.show()
 # -------------------------------------------------------------
 #Image Blurring (Image Smoothing) 
 #img = cv.imread('opencv-logo.png')
-img = cv.imread('Filter.png')
+img = cv.imread('filter.png')
 
 #Avering
 blurAv = cv.blur(img,(5,5))
