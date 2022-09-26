@@ -2,11 +2,13 @@
 import cv2 as cv
 import numpy as np
 
-#Execution:
+#Initialization:
 flags = [i for i in dir(cv) if i.startswith('COLOR_')]
 #print( flags )
 
 cap = cv.VideoCapture(0)
+
+#Execution:
 while(1):
     # Take each frame
     _, frame = cap.read()
@@ -27,7 +29,7 @@ while(1):
     cv.imshow('frame',frame)
     cv.imshow('mask',mask)
     cv.imshow('res',res)
-    
+
     k = cv.waitKey(5) & 0xFF
     if k == 27:
         break
