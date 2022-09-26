@@ -58,4 +58,5 @@ plt.show()
 plt.subplot(121),plt.imshow(imgSod),plt.title('Input')
 plt.subplot(122),plt.imshow(dst_pt),plt.title('Output')
 plt.show()
+
 #Termination:
