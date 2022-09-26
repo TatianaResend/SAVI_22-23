@@ -8,5 +8,5 @@ Tatiana Resende, nº93038, tatianaresende@ua.pt
 
 2022-2023
 
-Link repositório aulas:
+class repository:
 https://github.com/miguelriemoliveira/savi_22-23
