@@ -5,28 +5,26 @@ import cv2
 import numpy as np
 from time import sleep
 
-#Constantes
-largura_min = 100  # Largura minima do retangulo
-largura_max = 200
-altura_min = 100  # Altura minima do retangulo
-altura_max = 200
-offset = 6  # Erro permitido entre pixel
-pos_linha = 600  # Posição da linha de contagem
+#Constants
+widh_min = 100; widht_max = 400  # rectangle widh
+height_min = 100; height_max = 400  # rectangle height
+offset = 6  # Allowed error between pixels
+pos_line = 600  # Count line position
 delay = 60  # FPS do vídeo
 detec = []
 line_x1 = 180
 line_x2 = 1160
 
-def pega_centro(x, y, largura, altura):
+def pega_centro(x, y, widh, height):
     """
     :param x: x do objeto
     :param y: y do objeto
-    :param largura: largura do objeto
-    :param altura: altura do objeto
-    :return: tupla que contém as coordenadas do centro de um objeto
+    :param widh: largura do objeto
+    :param height: altura do objeto
+    :return: dupla que contém as coordenadas do centro de um objeto
     """
-    x1 = largura // 2
-    y1 = altura // 2
+    x1 = widh // 2
+    y1 = height // 2
     cx = x + x1
     cy = y + y1
     return cx, cy
@@ -34,9 +32,9 @@ def pega_centro(x, y, largura, altura):
 def set_info(detec):
     global carros
     for (x, y) in detec:
-        if (pos_linha + offset) > y > (pos_linha - offset):
+        if (pos_line + offset) > y > (pos_line - offset):
             carros += 1
-            cv2.line(frame1, (line_x1, pos_linha), (line_x2, pos_linha), (0, 127, 255), 3)
+            cv2.line(frame1, (line_x1, pos_line), (line_x2, pos_line), (0, 127, 255), 3)
             detec.remove((x, y))
             print("Carros detectados até o momento: " + str(carros))
 
@@ -69,12 +67,12 @@ while True:
     img_work = cv2.morphologyEx(img_work, cv2.MORPH_CLOSE, kernel)  # Tenta preencher todos os "buracos" da imagem
        
     contorno, img = cv2.findContours(img_work, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    cv2.line(frame1, (line_x1, pos_linha), (line_x2, pos_linha), (255, 127, 0), 3)
-    cv2.line(img_work, (line_x1, pos_linha), (line_x2, pos_linha), (255, 127, 0), 3)
+    cv2.line(frame1, (line_x1, pos_line), (line_x2, pos_line), (255, 127, 0), 3)
+    cv2.line(img_work, (line_x1, pos_line), (line_x2, pos_line), (255, 127, 0), 3)
     
     for (i, c) in enumerate(contorno):
         (x, y, w, h) = cv2.boundingRect(c)
-        validar_contorno = (w >= largura_min) and (h >= altura_min) and (w <= largura_max) and (h <= altura_max)
+        validar_contorno = (w >= widh_min) and (h >= height_min)
         if not validar_contorno:
             continue
 
@@ -86,8 +84,8 @@ while True:
         cv2.circle(img_work, centro, 4, (0, 0, 255), -1)
 
     set_info(detec)
-    show_info(img_work, img_work)
-    #show_info(frame1, img_work)
+    #show_info(img_work, img_work)
+    show_info(frame1, img_work)
 
     if cv2.waitKey(1) == 27:
         break
