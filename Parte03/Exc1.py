@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import cv2
-from matplotlib.pyplot import imshow
+#from matplotlib.pyplot import imshow
 import numpy as np
 from time import sleep
 
@@ -40,13 +40,13 @@ def set_info(detec):
             detec.remove((x, y))
             print("Carros detectados até o momento: " + str(carros))
 
-def show_info(frame1, dilatada):
+def show_info(frame1, img_work):
     text = f'Carros: {carros}'
     cv2.putText(frame1, text, (450, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 5)
     cv2.imshow("Video Original", frame1)
-    cv2.imshow("Detectar", dilatada)
+    cv2.imshow("Detectar", img_work)
 
-carros = caminhoes = 0
+carros = 0
 cap = cv2.VideoCapture('./docs/traffic.mp4')
 subtracao = cv2.bgsegm.createBackgroundSubtractorMOG()  # Pega o fundo e subtrai do que está se movendo
 
@@ -54,19 +54,24 @@ while True:
     ret, frame1 = cap.read()  # Pega cada frame do vídeo
     tempo = float(1 / delay)
     sleep(tempo)  # Dá um delay entre cada processamento
+
     grey = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)  # Pega o frame e transforma para preto e branco
     blur = cv2.GaussianBlur(grey, (3, 3), 5)  # Faz um blur para tentar remover as imperfeições da imagem
-    img_sub = subtracao.apply(blur)  # Faz a subtração da imagem aplicada no blur
     
-    dilat = cv2.dilate(img_sub, np.ones((5, 5)))  # "Engrossa" o que sobrou da subtração
-
+    img_sub = subtracao.apply(blur)  # Faz a subtração da imagem aplicada no blur
+   
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (
         5, 5))  # Cria uma matriz 5x5, em que o formato da matriz entre 0 e 1 forma uma elipse dentro
-    dilatada = cv2.morphologyEx(dilat, cv2.MORPH_CLOSE, kernel)  # Tenta preencher todos os "buracos" da imagem
-    dilatada = cv2.morphologyEx(dilatada, cv2.MORPH_CLOSE, kernel)
+    element = np.ones((5,5))
 
-    contorno, img = cv2.findContours(dilat, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    img_work = img_sub
+    img_work = cv2.erode(img_work, element)
+    img_work = cv2.morphologyEx(img_work, cv2.MORPH_CLOSE, kernel)  # Tenta preencher todos os "buracos" da imagem
+       
+    contorno, img = cv2.findContours(img_work, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.line(frame1, (line_x1, pos_linha), (line_x2, pos_linha), (255, 127, 0), 3)
+    cv2.line(img_work, (line_x1, pos_linha), (line_x2, pos_linha), (255, 127, 0), 3)
+    
     for (i, c) in enumerate(contorno):
         (x, y, w, h) = cv2.boundingRect(c)
         validar_contorno = (w >= largura_min) and (h >= altura_min) and (w <= largura_max) and (h <= altura_max)
@@ -74,15 +79,20 @@ while True:
             continue
 
         cv2.rectangle(frame1, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(img_work, (x, y), (x + w, y + h), (0, 255, 0), 2)
         centro = pega_centro(x, y, w, h)
         detec.append(centro)
         cv2.circle(frame1, centro, 4, (0, 0, 255), -1)
+        cv2.circle(img_work, centro, 4, (0, 0, 255), -1)
 
     set_info(detec)
-    show_info(frame1, dilatada)
+    show_info(img_work, img_work)
+    #show_info(frame1, img_work)
 
     if cv2.waitKey(1) == 27:
         break
 
 cv2.destroyAllWindows()
 cap.release()
+
+# https://github.com/gustavogino/Vehicle-Counter/blob/master/main.py
