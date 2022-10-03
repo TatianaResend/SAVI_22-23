@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from pickle import FALSE
 import cv2
 import numpy as np
 from time import sleep
@@ -44,24 +45,26 @@ def show_info(frame1, img_work):
 
 cars = 0
 cap = cv2.VideoCapture('./docs/traffic.mp4')
-subtracao = cv2.bgsegm.createBackgroundSubtractorMOG()  # Take the background and subtract from what's moving
+#subtraction = cv2.bgsegm.createBackgroundSubtractorMOG()  # Take the background and subtract from what's moving
+subtraction = cv2.createBackgroundSubtractorKNN(detectShadows=False)    # Take the background and subtract from what's moving
 
 while True:
     ret, frame1 = cap.read()  # Grab every frame of the video
     tempo = float(1 / delay)
     sleep(tempo)  # Delay between each processing
 
-    grey = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)  # RGB to GRAY
-    blur = cv2.GaussianBlur(grey, (3, 3), 5)  # image smoothing
-    
-    img_sub = subtracao.apply(blur)  # Subtraction of the image applied in the blur
+    gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)  # RGB to GRAY
+    blur = cv2.GaussianBlur(gray, (3, 3), 5)  # image smoothing
+
+    img_sub = subtraction.apply(blur)  # Subtraction of the image applied in the blur
    
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (
         5, 5))  # 5x5 matrix, where the matrix format between 0 and 1 forms an ellipse inside
     element = np.ones((5,5))
 
     img_work = img_sub
-    img_work = cv2.erode(img_work, element)
+    img_work = cv2.erode(img_work, np.ones((5,5)),iterations=2)
+    img_work = cv2.dilate(img_work, np.ones((4,4)), iterations=2)
     img_work = cv2.morphologyEx(img_work, cv2.MORPH_CLOSE, kernel)  # fill in holes
        
     contour, img = cv2.findContours(img_work, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
