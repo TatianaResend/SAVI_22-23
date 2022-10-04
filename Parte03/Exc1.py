@@ -63,10 +63,10 @@ while True:
     element = np.ones((5,5))
 
     img_work = img_sub
-    img_work = cv2.erode(img_work, np.ones((5,5)),iterations=2)
-    img_work = cv2.dilate(img_work, np.ones((4,4)), iterations=2)
+    img_work = cv2.erode(img_work, element,iterations=2)
+    img_work = cv2.dilate(img_work, element)
     img_work = cv2.morphologyEx(img_work, cv2.MORPH_CLOSE, kernel)  # fill in holes
-       
+
     contour, img = cv2.findContours(img_work, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.line(frame1, (line_x1, pos_line), (line_x2, pos_line), (255, 127, 0), 3)
     cv2.line(img_work, (line_x1, pos_line), (line_x2, pos_line), (255, 127, 0), 3)
@@ -81,7 +81,6 @@ while True:
         center = find_center(x, y, w, h)
         detec.append(center)
         cv2.circle(frame1, center, 4, (0, 0, 255), -1)
-
 
     set_info(detec)
     show_info(frame1, img_work)
