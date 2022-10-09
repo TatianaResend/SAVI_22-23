@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#Solução da aula
+#Solução da aula + casa
 
 import cv2
 import numpy as np
@@ -13,8 +13,10 @@ def main():
     threshold_difference = 20
 
     # Define rectangles (only once)
-    rects = [{'name': 'r1', 'x1': 400, 'y1': 500, 'x2': 600, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500}, 
-         {'name': 'r2', 'x1': 700, 'y1': 500, 'x2': 900, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500}]
+    rects = [{'name': 'r1', 'x1': 200, 'y1': 500, 'x2': 390, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500}, 
+         {'name': 'r2', 'x1': 400, 'y1': 500, 'x2': 590, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500},
+         {'name': 'r3', 'x1': 650, 'y1': 500, 'x2': 890, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500},
+         {'name': 'r4', 'x1': 900, 'y1': 500, 'x2': 1200, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500}]
 
     cap = cv2.VideoCapture("./docs/traffic.mp4")
     if (cap.isOpened()== False):
@@ -38,7 +40,6 @@ def main():
         # Step 3: get average color in rectangle
         for rect in rects:
 
-
             total = 0
             number_of_pixels = 0
             for row in range(rect['y1'],rect['y2']): # iterate all image pixels inside the rectangle
@@ -53,15 +54,12 @@ def main():
             if is_first_time:
                 rect['model_avg_color'] = rect['avg_color']
 
-
             # Compute the different in color and make a decision
             diff = abs(rect['avg_color'] - rect['model_avg_color'])
-
 
             if diff > 20 and (stamp - rect['tic_since_car_count']) > blackout_time:
                 rect['ncars'] = rect['ncars'] + 1
                 rect['tic_since_car_count'] = stamp
-
 
         is_first_time = False
 
@@ -83,12 +81,17 @@ def main():
             text = 'Time since lcc=' + str(round(stamp - rect['tic_since_car_count'],1))  + ' secs'
             image_rgb = cv2.putText(image_rgb, text, (rect['x1'], rect['y1']-40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,255), 1, cv2.LINE_AA)
 
+        # Add text total cars
+        totalcars = rects[0]['ncars']+rects[1]['ncars']+rects[2]['ncars']+rects[3]['ncars']
+        text2 = 'total cars=' + str(totalcars) 
+        #print(text2)
+        image_rgb = cv2.putText(image_rgb, text2, (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 1, cv2.LINE_AA)
 
         cv2.imshow('image_rgb',image_rgb) # show the image
         # cv2.imshow('image_gray',image_gray) # show the image
 
 
-        if cv2.waitKey(50) == ord('q'):
+        if cv2.waitKey(10) == ord('q'):
             break
 
 
