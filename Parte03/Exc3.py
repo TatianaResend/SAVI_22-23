@@ -12,12 +12,13 @@ def main():
     # ------------------------------------------
     blackout_time = 0.5# secs
     threshold_difference = 20
+    #average = [0,0,0]
 
     # Define rectangles (only once)
-    rects = [{'name': 'r1', 'x1': 200, 'y1': 500, 'x2': 390, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500}, 
-         {'name': 'r2', 'x1': 400, 'y1': 500, 'x2': 590, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500},
-         {'name': 'r3', 'x1': 650, 'y1': 500, 'x2': 890, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500},
-         {'name': 'r4', 'x1': 900, 'y1': 500, 'x2': 1200, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500}]
+    rects = [{'name': 'r1', 'x1': 200, 'y1': 500, 'x2': 390, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500, 'average': [0,0,0]}, 
+         {'name': 'r2', 'x1': 400, 'y1': 500, 'x2': 590, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500, 'average': [0,0,0]},
+         {'name': 'r3', 'x1': 650, 'y1': 500, 'x2': 890, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500, 'average': [0,0,0]},
+         {'name': 'r4', 'x1': 900, 'y1': 500, 'x2': 1200, 'y2': 600, 'ncars': 0, 'tic_since_car_count': -500, 'average': [0,0,0]}]
 
     cap = cv2.VideoCapture("./docs/traffic.mp4")
     if (cap.isOpened()== False):
@@ -62,15 +63,12 @@ def main():
                 rect['ncars'] = rect['ncars'] + 1
                 rect['tic_since_car_count'] = stamp
                 
-
-                rows,cols,channels = image_rgb.shape
-                BGR = image_rgb[:,:,:]
-                #for x in range (0,cols,1):
-                #    for y in range(0,rows,1):
-                #        color = image_rgb[y,x]
-                #        print (color)
+                #rows,cols,channels = image_rgb.shape
                 
-                print(BGR)
+                # Average color (B G R)
+                average_row=np.median(image_rgb[rect['y1']-10:rect['y1'],rect['x1']+50:rect['x2']-100],axis=0)
+                rect['average']=np.median(average_row, axis=0)
+                #print(average)      
 
         is_first_time = False
 
@@ -91,18 +89,17 @@ def main():
             # Add text time since last car count
             text = 'Time since lcc=' + str(round(stamp - rect['tic_since_car_count'],1))  + ' secs'
             image_rgb = cv2.putText(image_rgb, text, (rect['x1'], rect['y1']-40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,255), 1, cv2.LINE_AA)
-
+            
+            # Add text color
+            text = 'color' + str(np.around(rect['average']))
+            image_rgb = cv2.putText(image_rgb, text, (rect['x1'], rect['y1']-60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, rect['average'], 1, cv2.LINE_AA)    
+        
         # Add text total cars
         totalcars = rects[0]['ncars']+rects[1]['ncars']+rects[2]['ncars']+rects[3]['ncars']
-        text2 = 'total cars=' + str(totalcars) 
-        #print(text2)
-        image_rgb = cv2.putText(image_rgb, text2, (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 2, cv2.LINE_AA)
+        text = 'total cars=' + str(totalcars) 
+        image_rgb = cv2.putText(image_rgb, text, (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 2, cv2.LINE_AA)
 
         cv2.imshow('image_rgb',image_rgb) # show the image
-        # cv2.imshow('image_gray',image_gray) # show the image
-
-    
-
 
         if cv2.waitKey(10) == ord('q'):
             break
