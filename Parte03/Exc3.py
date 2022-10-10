@@ -4,6 +4,7 @@
 import cv2
 import numpy as np
 
+
 def main():
 
     # ------------------------------------------
@@ -60,6 +61,16 @@ def main():
             if diff > 20 and (stamp - rect['tic_since_car_count']) > blackout_time:
                 rect['ncars'] = rect['ncars'] + 1
                 rect['tic_since_car_count'] = stamp
+                
+
+                rows,cols,channels = image_rgb.shape
+                BGR = image_rgb[:,:,:]
+                #for x in range (0,cols,1):
+                #    for y in range(0,rows,1):
+                #        color = image_rgb[y,x]
+                #        print (color)
+                
+                print(BGR)
 
         is_first_time = False
 
@@ -85,10 +96,12 @@ def main():
         totalcars = rects[0]['ncars']+rects[1]['ncars']+rects[2]['ncars']+rects[3]['ncars']
         text2 = 'total cars=' + str(totalcars) 
         #print(text2)
-        image_rgb = cv2.putText(image_rgb, text2, (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 1, cv2.LINE_AA)
+        image_rgb = cv2.putText(image_rgb, text2, (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 2, cv2.LINE_AA)
 
         cv2.imshow('image_rgb',image_rgb) # show the image
         # cv2.imshow('image_gray',image_gray) # show the image
+
+    
 
 
         if cv2.waitKey(10) == ord('q'):
