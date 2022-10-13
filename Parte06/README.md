@@ -1,6 +1,3 @@
-Parte 6 - SAVI
-==============
-
 # Trabalho prático 1
 
 Pretende-se desenvolver um sistema inteligente que recebe um stream de vídeo da câmara a bordo do computador.
