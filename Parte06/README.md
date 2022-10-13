@@ -1,7 +1,5 @@
 Parte 6 - SAVI
 ==============
-Miguel Riem Oliveira <mriem@ua.pt>
-2022-2023
 
 # Sumário
 
