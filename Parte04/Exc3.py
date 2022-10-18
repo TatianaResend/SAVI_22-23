@@ -77,7 +77,7 @@ def main():
             detection.draw(image_gui)
             detections.append(detection)
             #img = detection.extractSmallImage(image_gray)  #NOK
-            cv2.imshow('detection ' + str(detection.id), detection.image )
+            #cv2.imshow('detection ' + str(detection.id), detection.image )   <- see the detections!
 
             
         # ------------------------------------------

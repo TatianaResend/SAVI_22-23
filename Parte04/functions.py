@@ -5,6 +5,7 @@ from copy import deepcopy
 from turtle import color
 
 import cv2
+from matplotlib.transforms import Bbox
 import numpy as np
 
 #Super class
@@ -17,7 +18,7 @@ class BoundingBox:
         self.area = w * h
         
         self.x2 = self.x1 + self.w
-        self.y2 = self.x2 + self.h
+        self.y2 = self.y1 + self.h
 
     
     def computeIOU(self, bbox2):
@@ -48,7 +49,7 @@ class Detection(BoundingBox):    # Class Dectetion will inherit as properties of
         #return img
 
     def draw(self, image_gui, color=(255,0,0)):
-        cv2.rectangle(image_gui, (self.x1,self.y1), (self.y2, self.x2), color, 3)
+        cv2.rectangle(image_gui, (self.x1,self.y1), (self.x2, self.y2), color, 3)
 
         image = cv2.putText(image_gui, 'D' + str(self.id), (self.x1, self.y1-5), cv2.FONT_HERSHEY_SIMPLEX, 
                         1, color, 2, cv2.LINE_AA)
@@ -58,6 +59,7 @@ class Tracker():
     def __init__(self, detection, id):
         self.detections = [detection]
         self.id = id
+        self.bboxes = []
 
 
     def draw(self, image_gui, color=(255,0,255)):
@@ -72,6 +74,21 @@ class Tracker():
 
     def addDetection(self, detection):
         self.detections.append(detection)
+        self.detection = detection.image
+        bbox = BoundingBox(detection.x1, detection.y1, detection.h, detection.w)
+        self.bboxes.append(bbox)
+
+    def track(self, image):
+        # Apply template Matching
+        method = cv2.TM_CCOEFF_NORMED
+        result = cv2.matchTemplate(image,self.template,method)
+        _, _, _, max_loc = cv2.minMaxLoc(result)
+
+        x1 = max_loc[0]
+        y1 = max_loc[1]
+
+       # bbox = BoundingBox(x1,y1,h,w)
+        #self
 
 
     def __str__(self):
