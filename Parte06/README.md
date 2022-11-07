@@ -1,15 +1,44 @@
-# Trabalho prático 1
+Parte 6 - SAVI
+==============
+Miguel Riem Oliveira <mriem@ua.pt>
+2022-2023
 
-Pretende-se desenvolver um sistema inteligente que recebe um stream de vídeo da câmara a bordo do computador.
+# Sumário
 
- 1. O sistema deverá detetar caras sempre que alguém chegar perto.
+- Features 
+- Feature matching
+- Image Mosaicking
 
- 2. Para além de detetar as caras o sistema deverá ser capaz de reconhecer as várias pessoas da turma (ou do grupo) `Gonçalo` . Para isso pode funcionar com uma base de dados pré-gravada. `Deve também ser possível iniciar o sistema sem ter ainda informação sobre nenhuma pessoa`.
+# Exercícios
 
- 3. `Deve ser possível visualizar a base de dados das pessoas em tempo real`
+## Exercício 1 - Tutorials de features do opencv
 
- 4. `O sistema deverá identificar as pessoas que reconhece, e perguntar sobre as pessoas desconhecidas`.
+Faça os exercícios do tutorial de OpenCV sobre [Feature Detection and Description](https://docs.opencv.org/4.x/db/d27/tutorial_py_table_of_contents_feature2d.html).
 
- 5. O sistema deve cumprimentar as pessoas que já conhece, dizendo "Hello <nome da pessoa>". Poderá utilizar uma ferramenta de \emph{text to speech}, por exemplo https://pypi.org/project/pyttsx3/
+## Exercício 2 - Compute features
 
- 6. O sistema deverá fazer o seguimento das pessoas na sala e manter a identificação em cima das pessoas que reconheceu anteriormente, ainda que atualmente não seja possível reconhecê-las.
+Carregue as imagens na pasta , calcule as _features_ do tipo **sift**, limitando o número de pontos chave a 500.
+
+Visualize as features encontradas em ambas as imagens.
+
+![Image](docs/q_features.jpg)
+![Image](docs/t_features.jpg)
+
+
+## Exercício 3 - Match features
+
+Usando as imagens da pasta castle, faça a associação das _features_ encontradas no exercício anterior, e represente os matches. 
+
+![Image](docs/all_matches.jpg)
+
+## Exercício 4 - Filter matches
+
+Utilize o teste de rácio de David Lowe para filtrar matches pouco confiáveis calculados no exercício anterior.
+
+![Image](docs/good_matches.jpg)
+
+## Exercício 5 - Stitch the images
+
+Utilizando as imagens da pasta machu pichu, faça a estimativa da transformação geométrica entre imagens com a função **findHomography**, e depois aplique essa transformação de modo a fundir as duas imagens numa só.
+
+![Image](docs/stitched.jpg)
