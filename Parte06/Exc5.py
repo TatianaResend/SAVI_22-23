@@ -18,8 +18,8 @@ def main():
     # Query image
     q_path = 'images/machu_pichu/2.png'
     q_image = cv2.imread(q_path)
-    q_gui = deepcopy(q_image)  
-    q_gray= cv2.cvtColor(q_image,cv2.COLOR_BGR2GRAY)
+    q_gui = deepcopy(q_image)
+    q_gray = cv2.cvtColor(q_image,cv2.COLOR_BGR2GRAY)
     q_win_name = 'Query Image'
     
     # Target image
@@ -63,7 +63,7 @@ def main():
         
         # David Lowe's test
         if best_mach.distance < 0.3 * second_best_match.distance:
-            matches.append(best_two_match[0])
+            matches.append(best_mach)
 
     """
         Find Homography
@@ -89,15 +89,16 @@ def main():
     t_pts_array = np.ndarray((num_pts,1,2), dtype=np.float32) # create a np array of the target poins to feed find
 
     for idx_match, match in enumerate(matches):
-        idx = match.queryIdx
         
-        q_x = q_key_points[idx].pt[0]
-        q_y = q_key_points[idx].pt[1]
+        q_idx = match.queryIdx
+        q_x = q_key_points[q_idx].pt[0]
+        q_y = q_key_points[q_idx].pt[1]
         q_pts_array[idx_match,0,0] = q_x
         q_pts_array[idx_match,0,1] = q_y
 
-        t_x = t_key_points[idx].pt[0]
-        t_y = t_key_points[idx].pt[1]
+        t_idx = match.trainIdx
+        t_x = t_key_points[t_idx].pt[0]
+        t_y = t_key_points[t_idx].pt[1]
         t_pts_array[idx_match,0,0] = t_x
         t_pts_array[idx_match,0,1] = t_y
     
@@ -137,6 +138,7 @@ def main():
 
         dst -> output image that has the size dsize and the same type as src . 
     """
+
     q_image_warped = q_image_warped[:,:,0:3]  #remove fourth channel
     
 
@@ -172,18 +174,6 @@ def main():
     # Show the matches image
     matches_image = cv2.drawMatches(q_image,q_key_points,t_image,t_key_points,matches,None)
 
-
-    # cv2.namedWindow(q_win_name,cv2.WINDOW_NORMAL)
-    # cv2.resizeWindow(q_win_name,600,400)
-    # cv2.imshow(q_win_name,q_gui)
-
-    # cv2.namedWindow(t_win_name,cv2.WINDOW_NORMAL)
-    # cv2.resizeWindow(t_win_name,600,400)
-    # cv2.imshow(t_win_name,t_gui)
-
-
-    # cv2.namedWindow('Matches',cv2.WINDOW_NORMAL)
-    # cv2.imshow('Matches',matches_image)
 
     cv2.namedWindow(q_win_name, cv2.WINDOW_NORMAL)
     cv2.resizeWindow(q_win_name, 600, 400)
