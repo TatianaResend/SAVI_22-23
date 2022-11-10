@@ -68,20 +68,6 @@ def main():
     """
         Find Homography
     """
-    # MIN_MATCH_COUNT = 10
-    # if len(matches)>MIN_MATCH_COUNT:
-    #     src_pts = np.float32([ q_key_points[m.queryIdx].pt for m in matches ]).reshape(-1,1,2)
-    #     dst_pts = np.float32([ t_key_points[m.trainIdx].pt for m in matches ]).reshape(-1,1,2)
-    #     M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
-    #     print(M)
-    #     matchesMask = mask.ravel().tolist()
-
-    #     h,w = q_gray.shape
-    #     pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
-    #     dst = cv2.perspectiveTransform(pts,M)
-
-    #     t_image = cv2.polylines(t_image,[np.int32(dst)],True,255,3, cv2.LINE_AA)
-
 
     # First we need to create the np.array of size (n_pts,1,2) to feed into the findhomography
     num_pts = len(matches)
