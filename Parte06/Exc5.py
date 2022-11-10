@@ -15,6 +15,7 @@ def main():
     """
         Load images
     """
+    
     # Query image
     q_path = 'images/machu_pichu/2.png'
     q_image = cv2.imread(q_path)
