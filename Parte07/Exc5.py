@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pickle
 from random import randint, uniform
 from colorama import Fore , Style
-from scipy.optimize import least_squares
+from scipy.optimize import least_squares08
 import math 
 from Model import Sinusoid
 
