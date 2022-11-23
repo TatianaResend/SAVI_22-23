@@ -5,6 +5,7 @@ import pickle
 from random import randint, uniform
 from colorama import Fore , Style
 import math 
+import numpy as np
 
 class Sinusoid():
     """ define the model of a line segment
@@ -15,6 +16,7 @@ class Sinusoid():
         self.gt = gt
         self.randomizeParams() 
         self.first_draw = True
+        self.xs_for_plot = list(np.linspace(-10, 10, num=500))
 
     def randomizeParams(self):
         self.a = uniform(-10,10)
@@ -23,7 +25,15 @@ class Sinusoid():
         self.k = uniform(-10,10)
         
     def getY(self,x):
-        return self.a * math.sin(self.b) + self.b
+        return self.a * math.sin(self.b * (x - self.h)) + self.k    
+    
+    def getYs(self, xs):
+        """Retrieves a list of ys by applying the model to a list of xs
+        """
+        ys = []
+        for x in xs:
+            ys.append(self.getY(x))
+        return ys
 
     def objectiveFunction(self):
         residuals = []
@@ -45,11 +55,10 @@ class Sinusoid():
         yf = self.getY(xf)
 
         if self.first_draw:
-            self.draw_handle = plt.plot([xi,xf],[yi,yf],color, linewidth=2)
+            self.draw_handle = plt.plot(self.xs_for_plot, self.getYs(self.xs_for_plot), color, linewidth=2)
             self.first_draw = False
         else:
-            plt.setp(self.draw_handle, data=([xi,xf],[yi,yf]))  #update ln
-        
+            plt.setp(self.draw_handle, data=(self.xs_for_plot, self.getYs(self.xs_for_plot)))  # update lm
 
 def main():
 
@@ -97,10 +106,10 @@ def main():
         print(error)
 
         if error < best_error:  # we found a better model
-            best_model.m = model.a    #copy the best found line params
+            best_model.a = model.a    #copy the best found line params
             best_model.b = model.b
-            best_model.b = model.h
-            best_model.b = model.k
+            best_model.h = model.h
+            best_model.k = model.k
             best_error = error      # update best error
             print(Fore.RED + 'We found a better model!!!' + Style.RESET_ALL )
 

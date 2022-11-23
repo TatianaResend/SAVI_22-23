@@ -38,12 +38,13 @@ class Line():
 
         # error is the sum of the residuals
         error = sum(residuals)
+        print('error=' + str(error))
 
         # Draw
         self.draw()
         plt.waitforbuttonpress()
 
-        return error
+        return residuals
 
     def draw(self, color = 'b--'):
         xi = -10
@@ -59,61 +60,68 @@ class Line():
         
 
 class Sinusoid():
-    """ define the model of a line segment
+    """Defines the model of a sinusoidal function
     """
 
     def __init__(self, gt):
 
         self.gt = gt
-        self.randomizeParams() 
+        self.randomizeParams()
         self.first_draw = True
+        self.xs_for_plot = list(np.linspace(-10, 10, num=500))
+
 
     def randomizeParams(self):
-        self.a = uniform(-10,10)
-        self.b = uniform(-10,10)
-        self.h = uniform(-10,10)
-        self.k = uniform(-10,10)
-        
-    def getY(self,x):
-        return self.a * math.sin(self.b) + self.b
+        self.a = uniform(-10, 10)
+        self.b = uniform(-10, 10)
+        self.h = uniform(-10, 10)
+        self.k = uniform(-10, 10)
 
-    def objectiveFunction(self,params):
+    def getY(self, x):
+        return self.a * math.sin(self.b * (x - self.h)) + self.k
 
-        self.a = params[0] 
+    def getYs(self, xs):
+        """Retrieves a list of ys by applying the model to a list of xs
+        """
+        ys = []
+        for x in xs:
+            ys.append(self.getY(x))
+        return ys
+            
+
+    def objectiveFunction(self, params):
+
+        # Convert scipy params list into class params
+        self.a = params[0]
         self.b = params[1]
         self.h = params[2]
         self.k = params[3]
 
         residuals = []
-
-        # percorrer os pontos todos do grounth true
-        for gt_x, gt_y in zip(self.gt['xs'],self.gt['ys']):
-            y = self.getY(gt_x)
+        for gt_x, gt_y in zip(self.gt['xs'], self.gt['ys']):
+            y = self.getY(gt_x) # compute y using the current model parameters
             residual = abs(y - gt_y)
             residuals.append(residual)
-
-        # error is the sum of the residuals
-        error = sum(residuals)
-        
-
-        # Draw
+            
+         # Draw for visualization
         self.draw()
-        plt.waitforbuttonpress()
+        plt.waitforbuttonpress(0.01)
+        
+        return residuals
 
-        return error
 
-    def draw(self, color = 'b--'):
+    def draw(self, color='b--'):
         xi = -10
         xf = 10
         yi = self.getY(xi)
         yf = self.getY(xf)
 
         if self.first_draw:
-            self.draw_handle = plt.plot([xi,xf],[yi,yf],color, linewidth=2)
+            self.draw_handle = plt.plot(self.xs_for_plot, self.getYs(self.xs_for_plot), color, linewidth=2)
             self.first_draw = False
         else:
-            plt.setp(self.draw_handle, data=([xi,xf],[yi,yf]))  #update ln
-
+            plt.setp(self.draw_handle, data=(self.xs_for_plot, self.getYs(self.xs_for_plot)))  # update lm
+            
 
 class Polynomial():
     """ define the model of a line segment
