@@ -10,8 +10,8 @@ def main():
     # Initialization
     # ------------------------------------------
     print("Load a ply point cloud, print it, and render it")
-    ply_point_cloud = o3d.data.PLYPointCloud()
-    point_cloud = o3d.io.read_point_cloud('data/factory.ply')
+    #ply_point_cloud = o3d.data.PLYPointCloud()
+    point_cloud = o3d.io.read_point_cloud('data/Factory/factory.ply')
     print(point_cloud)
     print(np.asarray(point_cloud.points))
     o3d.visualization.draw_geometries([point_cloud],
