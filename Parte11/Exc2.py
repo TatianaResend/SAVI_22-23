@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
 import matplotlib.pyplot as plt
-import pickle
-import numpy as np
 import torch 
 from model import Model
 from dataset import Dataset
+from time import sleep
 
 
 def main():
@@ -23,9 +22,9 @@ def main():
 
 
     # Draw training data
-    # plt.plot(dataset.xs_np,dataset.ys_np_labels,'go',label = 'labels')
-    # plt.legend(loc = 'best')
-    # plt.show()
+    plt.plot(dataset.xs_np,dataset.ys_np_labels,'g.',label = 'labels')
+    plt.legend(loc = 'best')
+    plt.show()
 
     # Define hyper parameters
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'   #cuda: 0 index of gpu
@@ -61,13 +60,13 @@ def main():
             optimizer.step()
 
             # Report
-            print('Epoch' + str(idx_epoch) + ', Loss' + str(loss.item()))
+            print('Epoch ' + str(idx_epoch) + ', Loss ' + str(loss.item()))
 
-            idx_epoch += 1  # go to next epoch
-            # Termination criteria
-            if idx_epoch > maximum_num_epochs:
-                print('Finished training. Reached maximum number of epochs.')
-                break
+        idx_epoch += 1  # go to next epoch
+        # Termination criteria
+        if idx_epoch > maximum_num_epochs:
+            print('Finished training. Reached maximum number of epochs.')
+            break
 
     # ----------------------------------------
     # finalization
@@ -75,10 +74,10 @@ def main():
     
     # Run the model once to get ys_predicted
     ys_ten_predicted = model.forward(dataset.xs_ten.to(device))
-    ys_np_predicted = ys_ten_predicted.cpu().detach().numpy
+    ys_np_predicted = ys_ten_predicted.cpu().detach().numpy()
     
-    plt.plot(dataset.xs_np,dataset.ys_np_labels,'rx',label = 'labels')
-    plt.plot(xs_np,ys_np_predicted,'rx',label = 'predicted')
+    plt.plot(dataset.xs_np,dataset.ys_np_labels,'g.',label = 'labels')
+    plt.plot(dataset.xs_np,ys_np_predicted,'rx',label = 'predicted')
     plt.legend(loc = 'best')
     plt.show()
 

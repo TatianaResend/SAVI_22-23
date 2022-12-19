@@ -7,8 +7,9 @@ import torch
 
 class Model(torch.nn.Module):
     def __init__(self):
-        super().__init_()
+        super().__init__()  #class superclass constructor
 
+        # Define the structure of the neural network
         self.layer1 = torch.nn.Linear(1,1)
 
     def forward(self,xs):
@@ -22,6 +23,7 @@ def main():
     # ------------------------------------------
     # Initialization
     # ------------------------------------------
+
     # Read file with points
     file = open('pts.pkl','rb')
     pts = pickle.load(file)
@@ -40,7 +42,7 @@ def main():
     # Define hyper parameters
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'   #cuda: 0 index of gpu
 
-    model = Model()
+    model = Model()  # Instantiate model
     model.to(device) # move the model variablle to gpu if one exists
     
     learning_rate = 0.01
@@ -69,9 +71,10 @@ def main():
         optimizer.step()
 
         # Report
-        print('Epoch' + str(idx_epoch) + ', Loss' + str(loss.item()))
+        print('Epoch ' + str(idx_epoch) + ', Loss ' + str(loss.item()))
 
         idx_epoch += 1  # go to next epoch
+
         # Termination criteria
         if idx_epoch > maximum_num_epochs:
             print('Finished training. Reached maximum number of epochs.')
@@ -83,10 +86,10 @@ def main():
     
     # Run the model once to get ys_predicted
     ys_ten_predicted = model.forward(xs_ten)
-    ys_np_predicted = ys_ten_predicted.cpu().detach().numpy
+    ys_np_predicted = ys_ten_predicted.cpu().detach().numpy()
     
-    plt.plot(xs_np,ys_np_labels,'rx',label = 'labels')
-    plt.plot(xs_np,ys_np_predicted,'rx',label = 'predicted')
+    plt.plot(xs_np,ys_np_labels,'g.',label = 'labels')
+    plt.plot(xs_np, ys_np_predicted,'rx', label = 'predicted')
     plt.legend(loc = 'best')
     plt.show()
 
